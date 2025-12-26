@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="refresh" content="5">
-<!-- This will refresh the page every 5 seconds -->
   <title>E4A Study Class</title>
 
   <!-- Font Awesome -->
@@ -14,9 +13,28 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 
   <style>
-    *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
-    html{scroll-behavior:smooth}
-    body{background:#f4f6f9;color:#333}
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:'Poppins',sans-serif
+    }
+
+    html, body{
+      height:100%;
+    }
+
+    body{
+      background:#f4f6f9;
+      color:#333;
+      display:flex;
+      flex-direction:column;
+    }
+
+    /* Main wrapper */
+    .page-wrapper{
+      flex:1;
+    }
 
     /* Header */
     header{
@@ -26,66 +44,123 @@
       padding:20px
     }
     header img{width:120px;margin-bottom:10px}
-    
-    
-    nav ul{list-style:none;display:flex;justify-content:center;gap:20px;flex-wrap:wrap}
-    nav ul li a{color:#f1f1f1;text-decoration:none;font-weight:600;transition:0.3s}
+
+    nav ul{
+      list-style:none;
+      display:flex;
+      justify-content:center;
+      gap:20px;
+      flex-wrap:wrap
+    }
+    nav ul li a{
+      color:#f1f1f1;
+      text-decoration:none;
+      font-weight:600;
+      transition:.3s
+    }
     nav ul li a:hover{color:#ffeb3b}
 
     /* Sections */
-    section{padding:70px 20px;max-width:1200px;margin:auto}
-    h2{text-align:center;color:#3498db;margin-bottom:40px}
+    section{
+      padding:70px 20px;
+      max-width:1200px;
+      margin:auto
+    }
+    h2{
+      text-align:center;
+      color:#3498db;
+      margin-bottom:40px
+    }
 
     /* About */
-    .about-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:30px}
-    .box{background:#fff;padding:30px;border-radius:15px;box-shadow:0 10px 20px rgba(0,0,0,.1);text-align:center}
+    .about-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+      gap:30px
+    }
+    .box{
+      background:#fff;
+      padding:30px;
+      border-radius:15px;
+      box-shadow:0 10px 20px rgba(0,0,0,.1);
+      text-align:center
+    }
 
     /* Students */
-    .student-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:25px}
+    .student-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+      gap:25px
+    }
     .student-card{
-      background:#fff;padding:25px;border-radius:15px;text-align:center;
-      box-shadow:0 8px 18px rgba(0,0,0,.1);cursor:pointer;transition:.3s
+      background:#fff;
+      padding:25px;
+      border-radius:15px;
+      text-align:center;
+      box-shadow:0 8px 18px rgba(0,0,0,.1);
+      cursor:pointer;
+      transition:.3s
     }
     .student-card:hover{transform:translateY(-8px)}
-    .student-card img{width:90px;height:90px;border-radius:50%;margin-bottom:10px}
-
-    /* Popup */
-    .popup{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center}
-    .popup-content{background:#fff;padding:35px;border-radius:20px;text-align:center;max-width:350px;width:90%;position:relative}
-    .popup-content img{width:120px;height:120px;border-radius:50%;margin-bottom:15px}
-    .close{position:absolute;top:15px;right:20px;font-size:22px;cursor:pointer}
+    .student-card img{
+      width:90px;
+      height:90px;
+      border-radius:50%;
+      margin-bottom:10px
+    }
 
     /* Contact */
-    .contact-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:30px;text-align:center}
-    .contact-grid i{font-size:30px;color:#3498db;margin-bottom:10px}
+    .contact-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+      gap:30px;
+      text-align:center
+    }
+    .contact-grid i{
+      font-size:30px;
+      color:#3498db;
+      margin-bottom:10px
+    }
 
-    footer{background:#2c3e50;color:#fff;text-align:center;padding:20px;margin-top:40px}
+    /* Footer FIXED */
+    footer{
+      background:#2c3e50;
+      color:#fff;
+      text-align:center;
+      padding:18px 10px;
+      font-size:14px;
+    }
+    footer span{
+      display:block;
+      font-size:13px;
+      opacity:.8;
+      margin-top:4px;
+    }
 
     /* Scroll Reveal */
-    .reveal{opacity:0;transform:translateY(40px);transition:all .8s ease}
-    .reveal.active{opacity:1;transform:none}
+    .reveal{
+      opacity:0;
+      transform:translateY(40px);
+      transition:all .8s ease
+    }
+    .reveal.active{
+      opacity:1;
+      transform:none
+    }
 
-    /* Mobile Fix */
     @media(max-width:600px){
       header img{width:90px}
       nav ul{gap:12px}
     }
-    footer{
-  background:#2c3e50;
-  color:#fff;
-  text-align:center;
-  padding:20px;
-  margin-top:40px;
-}
-
   </style>
 </head>
 <body>
 
+<div class="page-wrapper">
+
 <header>
   <img src="E4A_logo.png" alt="E4A Logo">
   <h1>E4A STUDY CLASS</h1>
-  
   <nav>
     <ul>
       <li><a href="#about">About Us</a></li>
@@ -123,21 +198,15 @@
   </div>
 </section>
 
-<footer class="reveal">© 2025 E4A Study Class | Education For All</footer>
-
-<!-- Popup -->
-<div class="popup" id="popup">
-  <div class="popup-content">
-    <span class="close" onclick="closePopup()">&times;</span>
-    <img id="pImg" />
-    <h3 id="pName"></h3>
-    <p id="pClass"></p>
-    
-  </div>
 </div>
 
+<!-- FOOTER -->
+<footer class="reveal">
+  © 2025 <strong>E4A Study Class</strong> | Education For All
+  <span>Designed by Maheshwar Besra</span>
+</footer>
+
 <script>
-  /* Students Data (LOCAL IMAGES) */
   const students = [
     { name: "Shankar Soy", class: "Class 1", img: "Students/sk.png" },
     { name: "Kamal Soy", class: "Class 1", img: "Students/ks.png" },
@@ -149,50 +218,28 @@
 
   const grid = document.getElementById("studentGrid");
 
-  students.forEach(student => {
+  students.forEach(s => {
     const card = document.createElement("div");
     card.className = "student-card reveal";
-
     card.innerHTML = `
-      <img src="${student.img}" alt="${student.name}">
-      <h4>${student.name}</h4>
-      <p>${student.class}</p>
+      <img src="${s.img}">
+      <h4>${s.name}</h4>
+      <p>${s.class}</p>
     `;
-
-    card.onclick = () => openPopup(student.name, student.class, student.img);
     grid.appendChild(card);
   });
 
-  function openPopup(name, cls, img) {
-    document.getElementById("pName").innerText = name;
-    document.getElementById("pClass").innerText = cls;
-    document.getElementById("pImg").src = img;
-    document.getElementById("popup").style.display = "flex";
-  }
-
-  function closePopup() {
-    document.getElementById("popup").style.display = "none";
-  }
-
-  /* Scroll Reveal (FIXED) */
   const reveals = document.querySelectorAll(".reveal");
-
-  function revealOnScroll() {
-    reveals.forEach(el => {
-      const top = el.getBoundingClientRect().top;
-      if (top < window.innerHeight - 100) {
+  function revealOnScroll(){
+    reveals.forEach(el=>{
+      if(el.getBoundingClientRect().top < window.innerHeight - 100){
         el.classList.add("active");
       }
     });
   }
-
   window.addEventListener("scroll", revealOnScroll);
   revealOnScroll();
 </script>
-<footer class="reveal">
-  © 2025 E4A Study Class | Education For All
-</footer>
 
 </body>
 </html>
-
