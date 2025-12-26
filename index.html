@@ -1,15 +1,17 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta http-equiv="refresh" content="5">
   <title>E4A Study Class</title>
 
   <!-- Font Awesome -->
+
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
   <!-- Google Font -->
+
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 
   <style>
@@ -27,13 +29,14 @@
     body{
       background:#f4f6f9;
       color:#333;
+      min-height:100vh;
       display:flex;
       flex-direction:column;
     }
 
-    /* Main wrapper */
-    .page-wrapper{
-      flex:1;
+    /* MAIN CONTENT AREA */
+    main{
+      flex:1 0 auto; /* pushes footer to bottom */
     }
 
     /* Header */
@@ -41,7 +44,7 @@
       background:linear-gradient(135deg,#3498db,#2c3e50);
       color:#fff;
       text-align:center;
-      padding:20px
+      padding:20px;
     }
     header img{width:120px;margin-bottom:10px}
 
@@ -60,103 +63,51 @@
     }
     nav ul li a:hover{color:#ffeb3b}
 
-    /* Sections */
     section{
       padding:70px 20px;
       max-width:1200px;
       margin:auto
     }
-    h2{
-      text-align:center;
-      color:#3498db;
-      margin-bottom:40px
-    }
+    h2{text-align:center;color:#3498db;margin-bottom:40px}
 
-    /* About */
-    .about-grid{
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-      gap:30px
-    }
-    .box{
-      background:#fff;
-      padding:30px;
-      border-radius:15px;
-      box-shadow:0 10px 20px rgba(0,0,0,.1);
-      text-align:center
-    }
+    .about-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:30px}
+    .box{background:#fff;padding:30px;border-radius:15px;box-shadow:0 10px 20px rgba(0,0,0,.1);text-align:center}
 
-    /* Students */
-    .student-grid{
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-      gap:25px
-    }
-    .student-card{
-      background:#fff;
-      padding:25px;
-      border-radius:15px;
-      text-align:center;
-      box-shadow:0 8px 18px rgba(0,0,0,.1);
-      cursor:pointer;
-      transition:.3s
-    }
+    .student-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:25px}
+    .student-card{background:#fff;padding:25px;border-radius:15px;text-align:center;box-shadow:0 8px 18px rgba(0,0,0,.1);cursor:pointer;transition:.3s}
     .student-card:hover{transform:translateY(-8px)}
-    .student-card img{
-      width:90px;
-      height:90px;
-      border-radius:50%;
-      margin-bottom:10px
-    }
+    .student-card img{width:90px;height:90px;border-radius:50%;margin-bottom:10px}
 
-    /* Contact */
-    .contact-grid{
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-      gap:30px;
-      text-align:center
-    }
-    .contact-grid i{
-      font-size:30px;
-      color:#3498db;
-      margin-bottom:10px
-    }
+    .contact-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:30px;text-align:center}
+    .contact-grid i{font-size:30px;color:#3498db;margin-bottom:10px}
 
-    /* Footer FIXED */
+    /* FOOTER – GUARANTEED BOTTOM */
     footer{
+      flex-shrink:0;
       background:#2c3e50;
       color:#fff;
       text-align:center;
-      padding:18px 10px;
+      padding:16px 10px;
       font-size:14px;
     }
     footer span{
       display:block;
       font-size:13px;
-      opacity:.8;
+      opacity:.85;
       margin-top:4px;
     }
 
-    /* Scroll Reveal */
-    .reveal{
-      opacity:0;
-      transform:translateY(40px);
-      transition:all .8s ease
-    }
-    .reveal.active{
-      opacity:1;
-      transform:none
-    }
+    .reveal{opacity:0;transform:translateY(40px);transition:all .8s ease}
+    .reveal.active{opacity:1;transform:none}
 
     @media(max-width:600px){
       header img{width:90px}
       nav ul{gap:12px}
     }
   </style>
+
 </head>
 <body>
-
-<div class="page-wrapper">
 
 <header>
   <img src="E4A_logo.png" alt="E4A Logo">
@@ -169,6 +120,8 @@
     </ul>
   </nav>
 </header>
+
+<main>
 
 <section id="about" class="reveal">
   <h2>About Us</h2>
@@ -198,11 +151,10 @@
   </div>
 </section>
 
-</div>
+</main>
 
-<!-- FOOTER -->
-<footer class="reveal">
-  © 2025 <strong>E4A Study Class</strong> | Education For All
+<footer>
+  © 2025 <strong>E4A Study Class | Education For All </strong>
   <span>Designed by Maheshwar Besra</span>
 </footer>
 
@@ -217,15 +169,10 @@
   ];
 
   const grid = document.getElementById("studentGrid");
-
   students.forEach(s => {
     const card = document.createElement("div");
     card.className = "student-card reveal";
-    card.innerHTML = `
-      <img src="${s.img}">
-      <h4>${s.name}</h4>
-      <p>${s.class}</p>
-    `;
+    card.innerHTML = `<img src="${s.img}"><h4>${s.name}</h4><p>${s.class}</p>`;
     grid.appendChild(card);
   });
 
