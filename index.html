@@ -192,6 +192,16 @@
       header h1{font-size:22px;letter-spacing:3px;}
       nav ul{gap:12px;}
     }
+
+        /* Disable selection, autofill, long press */
+    input, textarea, html{
+      user-select: none !important;
+      -webkit-user-select: none !important;
+      -ms-user-select: none !important;
+      -moz-user-select: none !important;
+      -webkit-touch-callout: none !important;
+      caret-color: transparent !important;
+    }
   </style>
 
 </head>
