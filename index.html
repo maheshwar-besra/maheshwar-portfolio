@@ -12,14 +12,14 @@
 
   <!-- Google Font -->
 
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 
   <style>
     *{
       margin:0;
       padding:0;
       box-sizing:border-box;
-      font-family:'Poppins',sans-serif
+      font-family:'Poppins',sans-serif;
     }
 
     html, body{
@@ -36,60 +36,138 @@
 
     /* MAIN CONTENT AREA */
     main{
-      flex:1 0 auto; /* pushes footer to bottom */
+      flex:1 0 auto;
     }
 
-    /* Header */
+    /* HEADER – INDIAN TRICOLOR */
     header{
-      background:linear-gradient(135deg,#3498db,#2c3e50);
-      color:#fff;
+      background: linear-gradient(135deg,
+        #FF9933 0%,
+        #FFFFFF 50%,
+        #138808 100%
+      );
       text-align:center;
       padding:20px;
+      position:relative;
     }
-    header img{width:120px;margin-bottom:10px}
+
+    /* Ashoka Chakra Accent Line */
+    header::after{
+      content:"";
+      display:block;
+      width:100%;
+      height:3px;
+      background:#000080;
+      margin-top:12px;
+    }
+
+    header img{
+      width:120px;
+      margin-bottom:10px;
+    }
+
+    header h1{
+      font-size:28px;
+      font-weight:700;
+      letter-spacing:4px;
+      color:#000;
+    }
 
     nav ul{
       list-style:none;
       display:flex;
       justify-content:center;
       gap:20px;
-      flex-wrap:wrap
+      flex-wrap:wrap;
+      margin-top:10px;
     }
+
     nav ul li a{
-      color:#f1f1f1;
+      color:#000;
       text-decoration:none;
       font-weight:600;
-      transition:.3s
+      transition:.3s;
     }
-    nav ul li a:hover{color:#ffeb3b}
+
+    nav ul li a:hover{
+      color:#0d47a1;
+    }
 
     section{
       padding:70px 20px;
       max-width:1200px;
-      margin:auto
+      margin:auto;
     }
-    h2{text-align:center;color:#3498db;margin-bottom:40px}
 
-    .about-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:30px}
-    .box{background:#fff;padding:30px;border-radius:15px;box-shadow:0 10px 20px rgba(0,0,0,.1);text-align:center}
+    h2{
+      text-align:center;
+      color:#3498db;
+      margin-bottom:40px;
+    }
 
-    .student-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:25px}
-    .student-card{background:#fff;padding:25px;border-radius:15px;text-align:center;box-shadow:0 8px 18px rgba(0,0,0,.1);cursor:pointer;transition:.3s}
-    .student-card:hover{transform:translateY(-8px)}
-    .student-card img{width:90px;height:90px;border-radius:50%;margin-bottom:10px}
+    .about-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+      gap:30px;
+    }
 
-    .contact-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:30px;text-align:center}
-    .contact-grid i{font-size:30px;color:#3498db;margin-bottom:10px}
+    .box{
+      background:#fff;
+      padding:30px;
+      border-radius:15px;
+      box-shadow:0 10px 20px rgba(0,0,0,.1);
+      text-align:center;
+    }
 
-    /* FOOTER – GUARANTEED BOTTOM */
+    .student-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+      gap:25px;
+    }
+
+    .student-card{
+      background:#fff;
+      padding:25px;
+      border-radius:15px;
+      text-align:center;
+      box-shadow:0 8px 18px rgba(0,0,0,.1);
+      cursor:pointer;
+      transition:.3s;
+    }
+
+    .student-card:hover{
+      transform:translateY(-8px);
+    }
+
+    .student-card img{
+      width:90px;
+      height:90px;
+      border-radius:50%;
+      margin-bottom:10px;
+    }
+
+    .contact-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+      gap:30px;
+      text-align:center;
+    }
+
+    .contact-grid i{
+      font-size:30px;
+      color:#3498db;
+      margin-bottom:10px;
+    }
+
+    /* FOOTER */
     footer{
-      flex-shrink:0;
       background:#2c3e50;
       color:#fff;
       text-align:center;
       padding:16px 10px;
       font-size:14px;
     }
+
     footer span{
       display:block;
       font-size:13px;
@@ -97,12 +175,21 @@
       margin-top:4px;
     }
 
-    .reveal{opacity:0;transform:translateY(40px);transition:all .8s ease}
-    .reveal.active{opacity:1;transform:none}
+    .reveal{
+      opacity:0;
+      transform:translateY(40px);
+      transition:all .8s ease;
+    }
+
+    .reveal.active{
+      opacity:1;
+      transform:none;
+    }
 
     @media(max-width:600px){
-      header img{width:90px}
-      nav ul{gap:12px}
+      header img{width:90px;}
+      header h1{font-size:22px;letter-spacing:3px;}
+      nav ul{gap:12px;}
     }
   </style>
 
@@ -112,6 +199,7 @@
 <header>
   <img src="E4A_logo.png" alt="E4A Logo">
   <h1>E4A STUDY CLASS</h1>
+
   <nav>
     <ul>
       <li><a href="#about">About Us</a></li>
@@ -154,7 +242,7 @@
 </main>
 
 <footer>
-  © 2025 <strong>E4A Study Class | Education For All </strong>
+  © 2025 <strong>E4A Study Class | Education For All</strong>
   <span>Designed by Maheshwar Besra</span>
 </footer>
 
@@ -178,19 +266,22 @@
 
   const reveals = document.querySelectorAll(".reveal");
   function revealOnScroll(){
-    reveals.forEach(el=>{
+    reveals.forEach(el => {
       if(el.getBoundingClientRect().top < window.innerHeight - 100){
         el.classList.add("active");
       }
     });
   }
+
   window.addEventListener("scroll", revealOnScroll);
   revealOnScroll();
 </script>
+
 <script>
-  if ("serviceWorker" in navigator) {
+  if("serviceWorker" in navigator){
     navigator.serviceWorker.register("sw.js");
   }
 </script>
+
 </body>
 </html>
