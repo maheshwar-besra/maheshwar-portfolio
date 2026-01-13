@@ -9,30 +9,50 @@
   <link rel="manifest" href="manifest.json">
 
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;700&display=swap" rel="stylesheet">
-  
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
   
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
   
   <style>
+    /* CSS VARIABLES */
+    :root {
+      --primary: #000080; /* Navy Blue */
+      --saffron: #FF9933;
+      --green: #138808;
+      --bg: #f4f6f9;
+      --text: #333;
+    }
+
     * { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif; }
     html, body { height:100%; }
     
     body {
-      background: #f4f6f9;
-      color: #333;
+      background: var(--bg);
+      color: var(--text);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       will-change: opacity; 
     }
 
+    /* WEBVIEW & LINK FIXES */
+    input, textarea, html, a, button, div {
+      -webkit-tap-highlight-color: transparent !important; 
+      outline: none !important; 
+    }
+    
+    a:focus, a:active, a:visited, a:hover {
+      text-decoration: none;
+      color: inherit;
+      background: none !important;
+    }
+
     /* MAIN CONTENT AREA */
     main { flex: 1 0 auto; }
 
-    /* HEADER – INDIAN TRICOLOR */
+    /* HEADER */
     header {
-      background: linear-gradient(135deg, #FF9933 0%, #FFFFFF 50%, #138808 100%);
+      background: linear-gradient(135deg, var(--saffron) 0%, #FFFFFF 50%, var(--green) 100%);
       text-align: center;
       padding: 20px;
       position: relative;
@@ -44,54 +64,92 @@
       display: block;
       width: 100%;
       height: 3px;
-      background: #000080;
+      background: var(--primary);
       margin-top: 12px;
     }
 
     header img { width: 120px; margin-bottom: 10px; border-radius: 50%; background: white; padding: 5px; }
     header h1 { font-size: 28px; font-weight: 700; color: #000; text-shadow: 1px 1px 2px rgba(255,255,255,0.5); }
 
-    /* --- HINDI TEXT FIX START --- */
+    /* HINDI TYPOGRAPHY */
     .hindi { 
       font-family: 'Noto Sans Devanagari', sans-serif; 
-      font-size: 1.15rem; /* Increased size */
-      font-weight: 500;   /* Medium weight (thicker than normal) */
-      line-height: 2.0;   /* More breathing room for matras */
-      color: #444;        /* Dark grey for softness */
-      text-align: justify; /* Looks cleaner in paragraphs */
+      font-size: 1.15rem; 
+      font-weight: 500;   
+      line-height: 2.0;   
+      color: #444;        
+      text-align: justify; 
     }
-    
-    .hindi strong {
-      font-weight: 700;   /* Bold */
-      color: #000;        /* Pure black for emphasis */
-      font-size: 1.18rem; /* Only slightly larger than base text */
-    }
-    /* --- HINDI TEXT FIX END --- */
+    .hindi strong { font-weight: 700; color: #000; font-size: 1.18rem; }
     
     h3 { margin-bottom: 20px; color: #d35400; }
-    p { font-size: 1rem; line-height: 1.7; margin-bottom: 10px; }
+    p { font-size: 1rem; line-height: 1.5; margin-bottom: 10px; }
 
+    /* NAVIGATION */
     nav ul { list-style: none; display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-top: 10px; }
     nav ul li a { color: #000; text-decoration: none; font-weight: 600; transition: .3s; padding: 5px 10px; border-radius: 20px; }
-    nav ul li a:hover { background: rgba(0,0,0,0.1); color: #000080; }
+    nav ul li a:hover { background: rgba(0,0,0,0.05); color: var(--primary); }
 
     section { padding: 50px 20px; max-width: 1200px; margin: auto; }
-    h2 { text-align: center; color: #000080; margin-bottom: 40px; text-transform: uppercase; letter-spacing: 1px; border-bottom: 2px solid #FF9933; display: inline-block; padding-bottom: 5px; position: relative; left: 50%; transform: translateX(-50%); }
+    h2 { 
+      text-align: center; 
+      color: var(--primary); 
+      margin-bottom: 40px; 
+      text-transform: uppercase; 
+      letter-spacing: 1px; 
+      border-bottom: 2px solid var(--saffron); 
+      display: inline-block; 
+      padding-bottom: 5px; 
+      position: relative; 
+      left: 50%; 
+      transform: translateX(-50%); 
+    }
 
+    /* GRIDS & CARDS */
     .about-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; }
-    .box { background: #fff; padding: 30px; border-radius: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.05); text-align: center; border-top: 4px solid #138808; }
+    .box { background: #fff; padding: 30px; border-radius: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.05); text-align: center; border-top: 4px solid var(--green); }
 
     .student-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px; }
-    .student-card { background: #fff; padding: 20px; border-radius: 15px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.08); cursor: pointer; transition: .3s; border-bottom: 3px solid #FF9933; }
+    .student-card { background: #fff; padding: 20px; border-radius: 15px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.08); cursor: pointer; transition: .3s; border-bottom: 3px solid var(--saffron); }
     .student-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.15); }
     .student-card img { width: 100px; height: 100px; border-radius: 50%; margin-bottom: 10px; object-fit: cover; border: 3px solid #eee; }
     .student-card h4 { color: #2c3e50; font-size: 1.1rem; }
     .student-card p { font-size: 0.9rem; color: #7f8c8d; }
 
+    /* CONTACT SECTION UPDATED */
     .contact-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; text-align: center; }
-    .contact-item { padding: 10px; }
-    .contact-item i { font-size: 30px; color: #FF9933; margin-bottom: 10px; }
-    .contact-item a { color: #333; }
+    
+    .contact-item { 
+      padding: 15px; 
+      border-radius: 10px;
+    }
+
+    .contact-item a {
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+    
+    .contact-item i { 
+      font-size: 34px; 
+      color: var(--primary); 
+      margin-bottom: 12px; 
+      display: block;
+      transition: transform 0.2s;
+    }
+    
+    .contact-item:active i {
+      transform: scale(0.9);
+    }
+    
+    /* BOLD TEXT FIX */
+    .contact-item p { 
+      color: #000; /* Pure black for maximum contrast */
+      font-weight: 600; /* Bold */
+      font-size: 1rem; /* Slightly larger */
+      margin: 0;
+      line-height: 1.4;
+    }
 
     footer { background: #2c3e50; color: #fff; text-align: center; padding: 20px 10px; font-size: 14px; margin-top: auto; }
     footer span { display: block; font-size: 13px; opacity: .7; margin-top: 5px; }
@@ -104,20 +162,13 @@
       header h1 { font-size: 22px; }
       nav ul { gap: 10px; }
     }
-
-    /* WEBVIEW OPTIMIZATION */
-    input, textarea, html {
-      user-select: none !important;
-      -webkit-tap-highlight-color: transparent;
-    }
-    a { text-decoration: none; }
   </style>
 </head>
 <body onload="pageLoaded()">
 
 <header>
   <img src="E4A_logo.png" alt="E4A Logo">
-  <h1>E4A &nbsp;STUDY &nbsp;CLASS</h1>
+  <h1>E4A  STUDY  CLASS</h1>
   <nav>
     <ul>
       <li><a href="#about">About</a></li>
@@ -139,8 +190,9 @@
     </div>
     <div class="box reveal">
       <h3>🎯 <span class="hindi" style="font-weight:700;">हमारा लक्ष्य</span> (Goal)</h3>
-      <p class="hindi">हमारा लक्ष्य सभी विद्यार्थियों को <strong>गुणवत्तापूर्ण और मूल्य-आधारित शिक्षा</strong> प्रदान करना है। हम बच्चों की <strong>मजबूत नींव, आत्मविश्वास, अनुशासन और जिज्ञासा </strong>विकसित करने पर ध्यान देते हैं, ताकि वे न केवल परीक्षाओं में अच्छा प्रदर्शन करें बल्कि एक जिम्मेदार और जागरूक नागरिक भी बनें।</p>
-      <p class="hindi"><strong>E4A Study Class</strong> में हम पूरी निष्ठा से <strong>“Education For All”</strong> के सिद्धांत पर कार्य करते हैं, और हर विद्यार्थी को आगे बढ़ने का अवसर देते हैं।।</p>
+      <p class="hindi">हमारा लक्ष्य सभी विद्यार्थियों को <strong>गुणवत्तापूर्ण और मूल्य-आधारित शिक्षा</strong> प्रदान करना है।
+      हम बच्चों की <strong>मजबूत नींव, आत्मविश्वास, अनुशासन और जिज्ञासा </strong>विकसित करने पर ध्यान देते हैं, ताकि वे न केवल परीक्षाओं में अच्छा प्रदर्शन करें बल्कि एक जिम्मेदार और जागरूक नागरिक भी बनें।</p>
+      <p class="hindi"><strong>E4A Study Class</strong> में हम पूरी निष्ठा से <strong>“Education For All”</strong> के सिद्धांत पर कार्य करते हैं।</p>
     </div>
   </div>
 </section>
@@ -153,10 +205,35 @@
 <section id="contact">
   <h2>Contact Us</h2>
   <div class="box contact-grid reveal">
-    <div class="contact-item"><i class="fa fa-phone"></i><p>8210660831</p></div>
-    <div class="contact-item"><i class="fab fa-whatsapp"></i><p><a href="https://whatsapp.com/channel/0029Vb7H8WC5PO17EFx61S38">Join WhatsApp</a></p></div>
-    <div class="contact-item"><i class="fa fa-envelope"></i><p>besra.m9@gmail.com</p></div>
-    <div class="contact-item"><i class="fa fa-map-marker-alt"></i><p>Adityapur, Jamshedpur</p></div>
+    
+    <div class="contact-item">
+      <a href="tel:8210660831">
+        <i class='bx bx-phone'></i> 
+        <p>8210660831</p>
+      </a>
+    </div>
+
+    <div class="contact-item">
+      <a href="https://whatsapp.com/channel/0029Vb7H8WC5PO17EFx61S38">
+        <i class='bx bxl-whatsapp'></i> 
+        <p>Join WhatsApp Channel</p>
+      </a>
+    </div>
+
+    <div class="contact-item">
+      <a href="mailto:besra.m9@gmail.com">
+        <i class='bx bx-envelope'></i> 
+        <p>besra.m9@gmail.com</p>
+      </a>
+    </div>
+
+    <div class="contact-item">
+      <a href="https://www.google.com/maps/search/?api=1&query=Adityapur+Jamshedpur" target="_blank">
+        <i class='bx bx-map'></i> 
+        <p>Adityapur, Jamshedpur</p>
+      </a>
+    </div>
+
   </div>
 </section>
 
