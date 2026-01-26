@@ -8,8 +8,7 @@
 
   <link rel="manifest" href="manifest.json">
 
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;700&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Noto+Sans+Devanagari:wght@400;500;700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
   
   <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
   
@@ -21,6 +20,7 @@
       --green: #138808;
       --bg: #f4f6f9;
       --text: #333;
+      --lightblue: #add8e6;
     }
 
     * { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif; }
@@ -57,6 +57,7 @@
       padding: 20px;
       position: relative;
       box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      z-index: 10;
     }
 
     header::after {
@@ -105,6 +106,154 @@
       transform: translateX(-50%); 
     }
 
+    /* =========================================
+       REPUBLIC DAY HERO STYLES
+    ========================================= */
+    .republic-hero-premium {
+      width: 100%;
+      min-height: 75vh; 
+      background: linear-gradient(180deg, #FF9933 15%, #ffffff 50%, #138808 85%);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 30px 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* ----- CSS FLAG CONSTRUCTION (STRAIGHTENED) ----- */
+    .flag-unit {
+        position: relative;
+        width: 180px;
+        height: 220px;
+        margin-bottom: 30px;
+        /* Rotation removed here so it is straight */
+        z-index: 2; /* Above flowers */
+    }
+    
+    .pole {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 8px;
+        height: 100%;
+        background: linear-gradient(to right, #444, #777);
+        border-radius: 4px;
+    }
+
+    .flag-cloth {
+        position: absolute;
+        top: 10px;
+        left: 8px;
+        width: 160px;
+        height: 100px;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 2px 4px 10px rgba(0,0,0,0.2);
+        border-radius: 0 10px 10px 0;
+    }
+
+    .strip { flex: 1; width: 100%; }
+    .saffron-strip { background: var(--saffron); border-radius: 0 10px 0 0; }
+    .white-strip { 
+        background: #fff; 
+        position: relative; 
+        display: flex; 
+        justify-content: center; 
+        align-items: center; 
+    }
+    .green-strip { background: var(--green); border-radius: 0 0 10px 0;}
+
+    /* Tiny Chakra inside the flag */
+    .mini-chakra-svg {
+        width: 28px;
+        height: 28px;
+        animation: spin-slow 12s linear infinite;
+    }
+
+    /* ----- PREMIUM TEXT STYLING ----- */
+    .republic-content-premium {
+      max-width: 900px;
+      z-index: 2; /* Above flowers */
+    }
+
+    .republic-title-premium {
+      font-family: 'Playfair Display', serif; 
+      color: var(--primary);
+      font-size: 3.5rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      letter-spacing: 1px;
+      text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.8), -1px -1px 2px rgba(0,0,0,0.1);
+      line-height: 1.1;
+    }
+
+    .republic-hindi-premium {
+      color: #222;
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      font-family: 'Noto Sans Devanagari', sans-serif;
+      text-shadow: 0px 0px 8px rgba(255, 255, 255, 0.9);
+    }
+
+    .republic-wish-premium { 
+      color: var(--primary);
+      font-size: 1.2rem; 
+      line-height: 1.6; 
+      font-weight: 500;
+      text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.7);
+    }
+
+    /* ----- FALLING FLOWERS ANIMATION ----- */
+    .falling-flowers {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1; /* Behind flag and text */
+      overflow: hidden;
+    }
+
+    .falling-flowers i {
+      position: absolute;
+      background: var(--saffron);
+      border-radius: 50%; /* Petal shape */
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      top: -50px;
+      animation: falling linear infinite;
+    }
+
+    @keyframes falling {
+      0% { transform: translate3d(0, 0, 0) rotate(0deg); opacity: 1; }
+      100% { transform: translate3d(100px, 100vh, 0) rotate(360deg); opacity: 0; }
+    }
+    
+    @keyframes spin-slow { 100% { transform: rotate(360deg); } }
+
+    /* Variety for flowers (positions, sizes, colors, speeds) */
+    .falling-flowers i:nth-child(1) { left: 5%; width: 15px; height: 15px; animation-duration: 7s; animation-delay: 0s; background: var(--saffron); }
+    .falling-flowers i:nth-child(2) { left: 12%; width: 10px; height: 10px; animation-duration: 10s; animation-delay: 2s; background: var(--white); }
+    .falling-flowers i:nth-child(3) { left: 18%; width: 18px; height: 18px; animation-duration: 8s; animation-delay: 1s; background: var(--green); }
+    .falling-flowers i:nth-child(4) { left: 25%; width: 12px; height: 12px; animation-duration: 12s; animation-delay: 4s; background: var(--lightblue); }
+    .falling-flowers i:nth-child(5) { left: 32%; width: 16px; height: 16px; animation-duration: 9s; animation-delay: 3s; background: var(--saffron); }
+    .falling-flowers i:nth-child(6) { left: 40%; width: 10px; height: 10px; animation-duration: 11s; animation-delay: 0s; background: #fff; }
+    .falling-flowers i:nth-child(7) { left: 48%; width: 14px; height: 14px; animation-duration: 7s; animation-delay: 2s; background: var(--green); }
+    .falling-flowers i:nth-child(8) { left: 55%; width: 12px; height: 12px; animation-duration: 13s; animation-delay: 1s; background: var(--lightblue); }
+    .falling-flowers i:nth-child(9) { left: 62%; width: 18px; height: 18px; animation-duration: 8s; animation-delay: 3s; background: var(--saffron); }
+    .falling-flowers i:nth-child(10){ left: 70%; width: 10px; height: 10px; animation-duration: 10s; animation-delay: 0s; background: #fff; }
+    .falling-flowers i:nth-child(11){ left: 78%; width: 15px; height: 15px; animation-duration: 9s; animation-delay: 2s; background: var(--green); }
+    .falling-flowers i:nth-child(12){ left: 85%; width: 12px; height: 12px; animation-duration: 11s; animation-delay: 1s; background: var(--lightblue); }
+    .falling-flowers i:nth-child(13){ left: 92%; width: 16px; height: 16px; animation-duration: 7s; animation-delay: 4s; background: var(--saffron); }
+    .falling-flowers i:nth-child(14){ left: 3%; width: 11px; height: 11px; animation-duration: 14s; animation-delay: 5s; background: #fff; }
+    .falling-flowers i:nth-child(15){ left: 97%; width: 13px; height: 13px; animation-duration: 12s; animation-delay: 3s; background: var(--green); }
+    .falling-flowers i:nth-child(16){ left: 50%; width: 15px; height: 15px; animation-duration: 15s; animation-delay: 6s; background: var(--primary); }
+
+
     /* GRIDS & CARDS */
     .about-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; }
     .box { background: #fff; padding: 30px; border-radius: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.05); text-align: center; border-top: 4px solid var(--green); }
@@ -142,11 +291,10 @@
       transform: scale(0.9);
     }
     
-    /* BOLD TEXT FIX */
     .contact-item p { 
-      color: #000; /* Pure black for maximum contrast */
-      font-weight: 600; /* Bold */
-      font-size: 1rem; /* Slightly larger */
+      color: #000; 
+      font-weight: 600; 
+      font-size: 1rem; 
       margin: 0;
       line-height: 1.4;
     }
@@ -161,6 +309,12 @@
       header img { width: 90px; }
       header h1 { font-size: 22px; }
       nav ul { gap: 10px; }
+      /* Mobile adjustments for premium section */
+      .republic-title-premium { font-size: 2.2rem; }
+      .republic-hindi-premium { font-size: 1.4rem; }
+      .republic-hero-premium { min-height: 60vh; }
+      /* Rotation removed here too */
+      .flag-unit { transform: scale(0.8); margin-bottom: 10px; }
     }
   </style>
 </head>
@@ -180,6 +334,44 @@
 
 <main>
 
+<section class="republic-hero-premium reveal">
+
+    <div class="falling-flowers">
+      <i></i><i></i><i></i><i></i>
+      <i></i><i></i><i></i><i></i>
+      <i></i><i></i><i></i><i></i>
+      <i></i><i></i><i></i><i></i>
+    </div>
+  
+    <div class="flag-unit">
+        <div class="pole"></div>
+        <div class="flag-cloth">
+            <div class="strip saffron-strip"></div>
+            <div class="strip white-strip">
+                <svg class="mini-chakra-svg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="12" cy="12" r="10" stroke="#000080" stroke-width="2" fill="none"/>
+                    <circle cx="12" cy="12" r="2" fill="#000080"/>
+                    <g stroke="#000080" stroke-width="1">
+                      <line x1="12" y1="2" x2="12" y2="22" /><line x1="2" y1="12" x2="22" y2="12" />
+                      <line x1="4.93" y1="4.93" x2="19.07" y2="19.07" /><line x1="19.07" y1="4.93" x2="4.93" y2="19.07" />
+                      <line x1="7" y1="3.34" x2="17" y2="20.66" /><line x1="17" y1="3.34" x2="7" y2="20.66" />
+                      <line x1="3.34" y1="7" x2="20.66" y2="17" /><line x1="3.34" y1="17" x2="20.66" y2="7" />
+                    </g>
+                  </svg>
+            </div>
+            <div class="strip green-strip"></div>
+        </div>
+    </div>
+
+  <div class="republic-content-premium">
+    <h1 class="republic-title-premium">Happy Republic Day</h1>
+    <h2 class="republic-hindi-premium">गणतंत्र दिवस की हार्दिक शुभकामनाएँ</h2>
+    <p class="republic-wish-premium">
+      Celebrating unity, heritage, and the power of education. <br>
+      <strong>Jai Hind!</strong>
+    </p>
+  </div>
+</section>
 <section id="about">
   <h2>About Us</h2>
   <div class="about-grid">
@@ -192,7 +384,7 @@
       <h3>🎯 <span class="hindi" style="font-weight:700;">हमारा लक्ष्य</span> (Goal)</h3>
       <p class="hindi">हमारा लक्ष्य सभी विद्यार्थियों को <strong>गुणवत्तापूर्ण और मूल्य-आधारित शिक्षा</strong> प्रदान करना है।
       हम बच्चों की <strong>मजबूत नींव, आत्मविश्वास, अनुशासन और जिज्ञासा </strong>विकसित करने पर ध्यान देते हैं, ताकि वे न केवल परीक्षाओं में अच्छा प्रदर्शन करें बल्कि एक जिम्मेदार और जागरूक नागरिक भी बनें।</p>
-      <p class="hindi"><strong>E4A Study Class</strong> में हम पूरी निष्ठा से <strong>“Education For All”</strong> के सिद्धांत पर कार्य करते हैं।</p>
+      <p class="hindi"><strong>E4A Study Class</strong> में हम पूरी निष्ठा से <strong>“Education For All– सबके लिए शिक्षा”</strong> के सिद्धांत पर कार्य करते हैं।</p>
     </div>
   </div>
 </section>
