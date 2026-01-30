@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Material Cost Calculator Pro</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1a73e8">
+    <link rel="apple-touch-icon" href="icon-192.png">
+
+    <style>
+        /* --- CSS VARIABLES & THEMING --- */
+        :root { 
+            --primary: #1a73e8; 
+            --secondary: #34a853; 
+            --accent: #f29900; 
+            --bg: #f0f4f8; 
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --border-color: #eeeeee;
+            --input-bg: #ffffff;
+            --danger: #d93025;
+            --btn:#16C47F;
+            --warning: #b8860b; 
+        }
+
+        /* Dark Mode Overrides */
+        body.dark-mode {
+            --bg: #121212;
+            --card-bg: #1e1e1e;
+            --text-color: #e0e0e0;
+            --border-color: #333333;
+            --input-bg: #2c2c2c;
+            --primary: #4285f4;
+            --warning: #fbc02d;
+            --danger: #ff5252;
+            --btn:#16C47F;
+        }
+
+        body { 
+            font-family: 'Segoe UI', Arial, sans-serif; 
+            background-color: var(--bg); 
+            color: var(--text-color); 
+            padding: 20px; 
+            transition: all 0.5s ease; 
+        }
+
+        /* Startup Mode */
+        body.startup-mode {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-height: 80vh; 
+        }
+        
+        .container { 
+            max-width: 850px; 
+            margin: auto; 
+            width: 100%;
+            transition: transform 0.5s ease;
+        }
+        
+        /* Typography Utilities */
+        .wt-black { color: #000000 !important; font-weight: bold; }
+        .dark-mode .wt-black { color: #ffffff !important; }
+        .cost-primary { color: var(--primary) !important; font-weight: bold; }
+        .perkg-warning { color: var(--warning) !important; font-weight: bold; }
+        .text-danger { color: var(--danger) !important; font-weight: bold; }
+
+        /* UI Components */
+        .header-card { 
+            background: var(--card-bg); 
+            padding: 30px; 
+            border-radius: 16px; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08); 
+            margin-bottom: 20px; 
+            text-align: center; 
+        }
+        
+        h3 { margin: 0 0 25px 0; color: var(--primary); }
+        
+        select { 
+            width: 100%; 
+            max-width: 450px; 
+            padding: 14px; 
+            border: 2px solid var(--primary); 
+            border-radius: 10px; 
+            font-size: 16px; 
+            font-weight: 600; 
+            cursor: pointer; 
+            margin-bottom: 20px; 
+            box-sizing: border-box;
+            background-color: var(--input-bg);
+            color: var(--text-color);
+            outline: none;
+        }
+        
+        .btn-group { display: flex; width: 100%; max-width: 450px; margin: 0 auto; gap: 10px; }
+        .btn-manage, .btn-history { flex: 1; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.3s; font-size: 14px; white-space: nowrap; }
+        
+        .btn-manage { background: var(--primary); color: white; }
+        .btn-history { background: var(--accent); color: white; }
+
+        /* --- MODAL SYSTEM --- */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1000; justify-content: center; align-items: center; }
+        .modal-content { 
+            background: var(--card-bg); 
+            color: var(--text-color);
+            width: 95%; 
+            max-width: 650px; 
+            max-height: 85vh; 
+            border-radius: 12px; 
+            padding: 25px; 
+            overflow-y: auto; 
+            position: relative; 
+        }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border-color); padding-bottom: 10px; margin-bottom: 15px; }
+        .close-btn { font-size: 24px; cursor: pointer; font-weight: bold; }
+
+        /* Import / Export Controls */
+        .io-controls {
+            background: rgba(0,0,0,0.04);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            border: 1px dashed var(--border-color);
+        }
+        .btn-io { flex: 1; padding: 10px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 13px; display: flex; align-items: center; justify-content: center; gap: 5px; }
+        .btn-export { background: #2196F3; color: white; }
+        .btn-import { background: #FF9800; color: white; }
+        
+        /* About/Premium Styles */
+        .premium-about { padding: 10px; }
+        .premium-hero { text-align: center; margin-bottom: 30px; }
+        .premium-hero .version { display: inline-block; background: var(--primary); color: white; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; margin-bottom: 10px; }
+        .premium-hero h1 { margin: 5px 0; font-size: 24px; color: var(--text-color); }
+        
+        .about-section { margin-bottom: 25px; }
+        .about-section h4 { color: var(--primary); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--border-color); padding-bottom: 5px; }
+        
+        .feature-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .feature-item { background: rgba(0,0,0,0.03); padding: 12px; border-radius: 8px; font-size: 13px; display: flex; align-items: flex-start; gap: 10px; }
+        .dark-mode .feature-item { background: rgba(255,255,255,0.05); }
+        .feature-item i { color: var(--secondary); font-weight: bold; }
+
+        .usage-step { margin-bottom: 10px; font-size: 14px; display: flex; gap: 12px; }
+        .step-num { background: var(--primary); color: white; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0; margin-top: 2px; }
+
+        /* Rate Manager Styles */
+        .rate-group-header { background: rgba(26, 115, 232, 0.1); color: var(--primary); padding: 8px 12px; border-radius: 6px; font-weight: bold; margin-top: 20px; margin-bottom: 10px; font-size: 14px; text-transform: uppercase; }
+        .rate-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; }
+        .rate-row { display: flex; flex-direction: column; background: var(--input-bg); padding: 8px; border-radius: 6px; border: 1px solid var(--border-color); }
+        .rate-row label { font-size: 11px; font-weight: bold; color: var(--text-color); opacity: 0.8; margin-bottom: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .rate-row input { padding: 6px; border: 1px solid var(--border-color); border-radius: 4px; font-size: 13px; background: var(--card-bg); color: var(--text-color); }
+        
+        /* History Table */
+        .history-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
+        .history-table th { background: rgba(0,0,0,0.05); color: var(--text-color); text-align: left; padding: 10px; border-bottom: 2px solid var(--border-color); }
+        .dark-mode .history-table th { background: rgba(255,255,255,0.05); }
+        .history-table td { padding: 10px; border-bottom: 1px solid var(--border-color); }
+        
+        .history-up { color: #ff5252; font-weight: bold; }
+        .history-down { color: #69f0ae; font-weight: bold; }
+
+        .modal-footer { margin-top: 25px; display: flex; gap: 10px; position: sticky; bottom: 0; background: var(--card-bg); padding-top: 15px; border-top: 1px solid var(--border-color); }
+        .btn-save { background: var(--secondary); color: white; border: none; flex: 1; padding: 12px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        .btn-close { background: #666; color: white; border: none; padding: 12px; border-radius: 6px; cursor: pointer; width: 100%; }
+
+        /* --- LAYOUT GRID --- */
+        .compound-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .single-grid { grid-template-columns: 1fr !important; max-width: 500px; margin: auto; }
+        
+        @media (max-width: 768px) { 
+            .compound-grid { grid-template-columns: 1fr; } 
+            .feature-grid { grid-template-columns: 1fr; }
+        }
+        
+        .card { background: var(--card-bg); padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-top: 5px solid var(--primary); }
+        .card.base-card { border-top-color: var(--secondary); }
+        .card.middle-card { border-top-color: var(--accent); } 
+        
+        .card h3 { margin: 0 0 15px 0; color: var(--text-color); border-bottom: 1px solid var(--border-color); padding-bottom: 10px; font-size: 18px; }
+
+        .item-row { display: flex; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border-color); }
+        .item-name { flex: 2; font-size: 14px; font-weight: 600; color: var(--text-color); opacity: 0.9; }
+        .item-input { flex: 1; }
+        .item-input input { width: 100%; padding: 6px; border: 1px solid var(--border-color); border-radius: 5px; text-align: center; font-size: 14px; background: var(--input-bg); color: var(--text-color); }
+
+        .results { margin-top: 15px; padding: 12px; background: rgba(0,0,0,0.03); border-radius: 8px; border: 1px solid var(--border-color); }
+        .res-line { display: flex; justify-content: space-between; margin-bottom: 4px; font-size: 15px; }
+        .res-line b { font-size: 17px; }
+
+        .floating-box { position: fixed; bottom: 25px; right: 25px; display: flex; flex-direction: column; gap: 15px; z-index: 2000; }
+        .float-btn { width: 48px; height: 48px; border-radius: 50%; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 22px; color: white; box-shadow: 0 4px 10px rgba(0,0,0,0.3); transition: transform 0.2s; }
+        .btn-about { background: var(--btn);  }
+        .btn-theme { background: var(--primary); }
+
+        input, textarea, html { user-select: none !important; -webkit-tap-highlight-color: transparent; }
+    </style>
+</head>
+<body class="startup-mode"> 
+
+<div class="container">
+    <div class="header-card">
+        <h3>Batch Wt. & Cost Calculator</h3>
+        <select id="groupSelect" onchange="loadGroup()">
+            <option value="">-- Select Material Category --</option>
+            <option value="NBR">NBR (ECL Top & Base)</option>
+            <option value="XNBR">XNBR (STL Top & Base)</option>
+            <option value="MB">MASTER BATCH</option>
+            <option value="SBR">SBR (CRM Top & Base)</option>
+            <option value="PICKING">SBR (PICKING Top & EBN Base)</option>
+            <option value="SPM">Hypalon (SPM Top & Base)</option>
+            <option value="NBR_RMA">NBR+RMA TCIL ECL 1 & 2 (Top & Base)</option>
+            <option value="BLACK_STRIPPER">NBR Black Stripper Ring </option>
+            <option value="COLOUR_STRIPPER">NBR Colour Stripper Ring</option>
+            <option value="DAMING">NBR TCIL Daming (Top & Base)</option>
+            <option value="QUADRANT">NBR TSDPL Quadrant Roll</option>
+            <option value="SLEEVE">SLEEVE (Top, Middle & Base)</option>                
+            <option value="CTC">CTC Jumbo Wheel</option>
+        </select>
+        <div class="btn-group">
+            <button class="btn-manage" onclick="toggleModal('rateModal', true)">⚙ Manage Rates</button>
+            <button class="btn-history" onclick="toggleModal('historyModal', true)">📜 Rate History</button>
+        </div>
+    </div>
+
+    <div id="displayArea" class="compound-grid"></div>
+
+    <div id="rateModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Update Item Rates</h3>
+                <span class="close-btn" onclick="toggleModal('rateModal', false)">&times;</span>
+            </div>
+
+            <div class="io-controls">
+                <button class="btn-io btn-export" onclick="exportData()">
+                    ⬇ Export Rates
+                </button>
+                <button class="btn-io btn-import" onclick="document.getElementById('importFile').click()">
+                    ⬆ Import Rates
+                </button>
+                <input type="file" id="importFile" style="display: none" accept=".json" onchange="importData(this)">
+            </div>
+
+            <div id="rateEditorContent"></div>
+            <div class="modal-footer">
+                <button class="btn-save" onclick="saveRates()">Save Rates & Update Costs</button>
+                <button class="btn-close" style="flex:1" onclick="toggleModal('rateModal', false)">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="historyModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Rate Change History</h3>
+                <span class="close-btn" onclick="toggleModal('historyModal', false)">&times;</span>
+            </div>
+            <div style="overflow-x:auto;">
+                <table class="history-table">
+                    <thead>
+                        <tr><th>Date</th><th>Item</th><th>Old</th><th>New</th></tr>
+                    </thead>
+                    <tbody id="historyContent"></tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-close" onclick="toggleModal('historyModal', false)">Close History</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="aboutModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 style="margin:0">About Application Info</h3>
+                <span class="close-btn" onclick="toggleModal('aboutModal', false)">&times;</span>
+            </div>
+            
+            <div class="premium-about">
+                <div class="premium-hero">
+                    <h1> Batch Wt. & Material Cost Calculator Pro</h1>
+                    <p style="opacity:0.7; font-size:14px;">Next-gen industrial compounding utility.</p>
+                  <span class="version">PREMIUM V1.0</span>
+                  <p style="opacity:0.7; font-size:15px;"> <strong>Crafted and built by Maheshwar Besra</strong></p>
+                </div>
+
+                <div class="about-section">
+                    <h4>🚀 Key Features</h4>
+                    <div class="feature-grid">
+                        <div class="feature-item"><i>✔</i> Real-time calculation of Batch Weight, Material Cost & Per Kg Cost.</div>
+                        <div class="feature-item"><i>✔</i> Dynamic Rate Manager with Storage Sync.</div>
+                        <div class="feature-item"><i>✔</i> Detailed Change History with manual delete option.</div>
+                        <div class="feature-item"><i>✔</i> Import/Export Rates functionality.</div>
+                        <div class="feature-item"><i>✔</i> Dark Mode support for industrial environments.</div>
+                        <div class="feature-item"><i>✔</i> Smart Input validation & default value restoration.</div>
+                    </div>
+                </div>
+
+                <div class="about-section">
+                    <h4>📖 How to Use</h4>
+                    <div class="usage-step">
+                        <div class="step-num">1</div>
+                        <div><b>Select Category:</b> Use the main dropdown to select your material compound (e.g., NBR).</div>
+                    </div>
+                    <div class="usage-step">
+                        <div class="step-num">2</div>
+                        <div><b>Adjust Quantities:</b> Change the values in the input fields. Calculations update instantly.</div>
+                    </div>
+                    <div class="usage-step">
+                        <div class="step-num">3</div>
+                        <div><b>Manage Rates:</b> Click "Manage Rates" to update global item costs or Import/Export data.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn-close" onclick="toggleModal('aboutModal', false)">Back to Dashboard</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="floating-box">
+    <button id="aboutIcon" class="float-btn btn-about" onclick="toggleModal('aboutModal', true)">ⓘ </button>
+    <button class="float-btn btn-theme" onclick="toggleDarkMode()">🌓</button>
+</div>
+
+<script>
+    // ============================================
+    // SECTION 1: THEME & CONFIG
+    // ============================================
+
+    function toggleDarkMode() {
+        const isDark = document.body.classList.toggle('dark-mode');
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    }
+    if (localStorage.getItem('theme') === 'dark') document.body.classList.add('dark-mode');
+
+    // Groups for the Rate Manager Modal
+    // FIX: Added 'CBS' to Chemicals
+    const rateGroupConfig = {
+        "Polymers": ["NBR", "XNBR", "SBR", "HYP CSM-40", "NEO", "RMA", "RMAIX", "NBR PVC"],
+        "Chemicals": ["CAZ", "CBY", "CCX", "CDW", "CEV", "CFU", "CGT", "CHS", "CHSS80", "CTA", "CJQ", "CKP", "CLM", "CMN", "CNL", "CPK", "CQJ", "CRH", "CSG", "CIB", "RM 3000", "Brown Facties", "CBS"],
+        "Carbon": ["C-220", "C-330", "C-550", "C-660", "C-774"],
+        "Filler Compounds": ["ZNO", "PF", "CaCO3", "VN-3", "China", "Baraytes", "Zn Peroxide"],
+        "Oils": ["DOP", "SP", "DEG", "SI 69", "DOPOL", "Epoxy"],
+        "Others": ["MB"]
+    };
+
+    
+    const defaultRates = {
+        "NBR": 212.0, "SBR": 174.0, "XNBR": 585.0, "HYPCSM40": 350.0, "NEO": 385.0, "PBR": 180.0, "RMA": 200.0, "RMAIX": 270.0, "NBRPVC": 0.0,
+        "CAZ": 108.0, "CBY": 175.0, "CCX": 136.0, "CDW": 330.0, "CEV": 115.0, "CFU": 198.0, "CGT": 860.0, "CHS": 70.0, "CHSS80": 158.0, 
+        "CTA": 350.0, "CJQ": 625.0, "CKP": 200.0, "CLM": 525.0, "CMN": 750.0, "CNL": 0.0, "CPK": 170.0, "CQJ": 238.0, "CRH": 430.0, 
+        "CSG": 105.0, "CIB": 360.0, "RM3000": 70.0, "BROWNFACTIES": 109.0, "C220": 110.0, "C330": 98.0, "C550": 116.0, "C660": 114.0, 
+        "C774": 125.0, "ZNO": 240.0, "PF": 175.0, "CaCO3": 12.0, "VN3": 66.0, "BARAYTES": 15.0, "ZNPEROXIDE": 1750.0, "CHINA": 6.0,
+        "DOP": 130.0, "SP": 85.0, "DEG": 95.0, "SI69": 395.0, "DOPOL": 0.0, "EPOXY": 300.0, "MB": 693.53
+    };
+
+    // Global State (In-Memory for speed)
+    let appRates = { ...defaultRates };
+    let rateHistory = [];
+    
+    // ============================================
+    // SECTION 2: HYBRID STORAGE MANAGER (ROBUST)
+    // ============================================
+    const DB_NAME = 'MaterialCalcDB';
+    const DB_VERSION = 1;
+    let dbInstance = null;
+    let useLocalStorage = false; // Fallback mode
+
+    // 1. Initialize Database with Fallback
+    function initDB() {
+        if (!window.indexedDB) {
+            console.warn("IndexedDB not supported. Falling back to LocalStorage.");
+            useLocalStorage = true;
+            loadDataFromStorage();
+            return;
+        }
+
+        const request = indexedDB.open(DB_NAME, DB_VERSION);
+
+        request.onupgradeneeded = (event) => {
+            const db = event.target.result;
+            if (!db.objectStoreNames.contains('rates')) {
+                db.createObjectStore('rates', { keyPath: 'id' });
+            }
+            if (!db.objectStoreNames.contains('history')) {
+                db.createObjectStore('history', { keyPath: 'id', autoIncrement: true });
+            }
+        };
+
+        request.onsuccess = async (event) => {
+            dbInstance = event.target.result;
+            await loadDataFromStorage();
+            console.log("DB Initialized");
+        };
+
+        request.onerror = (event) => {
+            console.error("Database error, switching to LocalStorage", event);
+            useLocalStorage = true;
+            loadDataFromStorage();
+        };
+    }
+
+    // 2. Load Data (Handles both DB and LocalStorage)
+    async function loadDataFromStorage() {
+        if (useLocalStorage) {
+            // LocalStorage Logic
+            const savedRates = localStorage.getItem('ls_rates');
+            const savedHistory = localStorage.getItem('ls_history');
+            
+            if (savedRates) appRates = JSON.parse(savedRates);
+            if (savedHistory) rateHistory = JSON.parse(savedHistory);
+            
+            updateCalculations();
+            return;
+        }
+
+        // IndexedDB Logic
+        const tx = dbInstance.transaction(['rates', 'history'], 'readonly');
+        const rateStore = tx.objectStore('rates');
+        const histStore = tx.objectStore('history');
+
+        const rateReq = rateStore.getAll();
+        const histReq = histStore.getAll();
+
+        tx.oncomplete = () => {
+            const savedRates = rateReq.result;
+            const savedHistory = histReq.result;
+
+            if (savedRates.length > 0) {
+                savedRates.forEach(record => {
+                    appRates[record.id] = record.price;
+                });
+            } else {
+                saveBulkRatesToStorage(appRates); // Init DB with defaults
+            }
+
+            if (savedHistory.length > 0) {
+                rateHistory = savedHistory.sort((a, b) => new Date(b.date) - new Date(a.date));
+            }
+            
+            updateCalculations();
+        };
+    }
+
+    // 3. Save Bulk Data (Used for Import/Init)
+    function saveBulkRatesToStorage(ratesObj) {
+        if (useLocalStorage) {
+            localStorage.setItem('ls_rates', JSON.stringify(ratesObj));
+            return;
+        }
+        
+        const tx = dbInstance.transaction(['rates'], 'readwrite');
+        const store = tx.objectStore('rates');
+        for (const [key, value] of Object.entries(ratesObj)) {
+            store.put({ id: key, price: value });
+        }
+    }
+
+    function saveBulkHistoryToStorage(histArray) {
+        if (useLocalStorage) {
+            localStorage.setItem('ls_history', JSON.stringify(histArray));
+            return;
+        }
+
+        const tx = dbInstance.transaction(['history'], 'readwrite');
+        const store = tx.objectStore('history');
+        // Clear and rewrite for simplicity in bulk ops
+        store.clear().onsuccess = () => {
+             histArray.forEach(item => store.put(item));
+        };
+    }
+    
+    // 4. Update Single Rate
+    function updateRateInStorage(key, newPrice) {
+        if (useLocalStorage) {
+            localStorage.setItem('ls_rates', JSON.stringify(appRates));
+            return;
+        }
+        const tx = dbInstance.transaction(['rates'], 'readwrite');
+        tx.objectStore('rates').put({ id: key, price: newPrice });
+    }
+
+    // 5. Add History
+    function addHistoryToStorage(entry) {
+        if (useLocalStorage) {
+            localStorage.setItem('ls_history', JSON.stringify(rateHistory));
+            return;
+        }
+        const tx = dbInstance.transaction(['history'], 'readwrite');
+        tx.objectStore('history').add(entry);
+    }
+    
+    // 6. Delete History (Sync)
+    function syncHistoryStorage() {
+        saveBulkHistoryToStorage(rateHistory);
+    }
+
+    // ============================================
+    // SECTION 3: IMPORT / EXPORT (BLOB FIX)
+    // ============================================
+
+    // Export Data to JSON File (Using Blob for better Mobile support)
+    function exportData() {
+        const exportObj = {
+            version: 1,
+            date: new Date().toISOString(),
+            rates: appRates,
+            history: rateHistory
+        };
+        
+        const jsonStr = JSON.stringify(exportObj, null, 2);
+        const blob = new Blob([jsonStr], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        
+        const downloadAnchorNode = document.createElement('a');
+        downloadAnchorNode.href = url;
+        downloadAnchorNode.download = "MaterialRates_Backup.json";
+        document.body.appendChild(downloadAnchorNode);
+        downloadAnchorNode.click();
+        downloadAnchorNode.remove();
+        URL.revokeObjectURL(url); // Clean up
+    }
+
+    // Import Data from JSON File
+    function importData(inputElement) {
+        const file = inputElement.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const importedData = JSON.parse(e.target.result);
+                
+                if (importedData.rates) {
+                    appRates = { ...appRates, ...importedData.rates };
+                    saveBulkRatesToStorage(appRates);
+                }
+                
+                if (importedData.history) {
+                    rateHistory = [...importedData.history, ...rateHistory];
+                    rateHistory.sort((a, b) => new Date(b.date) - new Date(a.date));
+                    saveBulkHistoryToStorage(rateHistory);
+                }
+
+                alert("✅ Data Imported Successfully!");
+                renderGroupedRates();
+                updateCalculations();
+                
+            } catch (err) {
+                alert("❌ Error importing file: Invalid JSON format.");
+                console.error(err);
+            }
+        };
+        reader.readAsText(file);
+        inputElement.value = ''; 
+    }
+
+    // ============================================
+    // SECTION 4: APP LOGIC & RECIPES
+    // ============================================
+
+    const recipes = {
+        "NBR": {
+            top: { name: "ECL (Top)", items: [{item:"NBR", qty:10}, {item:"CHSS80", qty:0.15}, {item:"CAZ", qty:0.5}, {item:"CBY", qty:0.2}, {item:"CEV", qty:0.15}, {item:"CFU", qty:0.2}, {item:"CGT", qty:0.2}, {item:"RM 3000", qty:0.5}, {item:"CCX", qty:0.05}, {item:"CDW", qty:0.2}, {item:"CJQ", qty:0.05}, {item:"ZNO", qty:1.5}, {item:"PF", qty:0.5},{item:"C-330", qty:3}, {item:"DOP", qty:0.75}], visible: ["C-330"] },
+            base: { name: "ECL (Base)", items: [{item:"NBR", qty:10}, {item:"CHS", qty:0.21}, {item:"CBY", qty:0.35}, {item:"CAZ", qty:0.5}, {item:"CEV", qty:0.15}, {item:"CFU", qty:0.15}, {item:"RM 3000", qty:0.35}, {item:"ZNO", qty:1.0}, {item:"PF", qty:1.5}, {item:"China", qty:3.0}, {item:"VN-3", qty:3.5}, {item:"C-550", qty:2.0}, {item:"CDW", qty:0.145}, {item:"CCX", qty:0.15}, {item:"DOP", qty:0.5}, {item:"DEG", qty:0.1}], visible: ["China", "VN-3", "C-550"] }
+        },
+        "XNBR": {
+            top: { name: "STL Roll (Top)", items: [{item:"XNBR", qty:10}, {item:"PBR", qty:0.3}, {item:"CHSS80", qty:0.11}, {item:"CAZ", qty:0.3}, {item:"CEV", qty:0.22}, {item:"CFU", qty:0.1}, {item:"CLM", qty:0.1}, {item:"CQJ", qty:0.08}, {item:"CJQ", qty:0.04}, {item:"RM 3000", qty:1.0}, {item:"C-220", qty:3.0}, {item:"C-550", qty:2.5}, {item:"CDW", qty:0.13}, {item:"M.B", qty:1.9}, {item:"DOP", qty:0.6}], visible: ["C-220", "C-550"] },
+            base: { name: "STL Roll (Base)", items: [{item:"NBR", qty:10}, {item:"CHS", qty:0.2}, {item:"CEV", qty:0.2}, {item:"CFU", qty:0.1}, {item:"CQJ", qty:0.04}, {item:"CJQ", qty:0.03}, {item:"RM 3000", qty:0.65}, {item:"ZNO", qty:0.3}, {item:"China", qty:3.0}, {item:"C-550", qty:1.5}, {item:"C-660", qty:3.0}, {item:"VN-3", qty:3.0}, {item:"CDW", qty:0.15}, {item:"CCX", qty:0.15}, {item:"DOP", qty:0.4}], visible: ["China", "C-550", "C-660", "VN-3"] }
+        },
+        "SBR": {
+            top: { name: "CRM (Top)", items: [{item:"SBR", qty:10.0}, {item:"CAZ", qty:0.1}, {item:"CBY", qty:0.3}, {item:"CEV", qty:0.15}, {item:"CFU", qty:0.2}, {item:"RM 3000", qty:0.3}, {item:"ZNO", qty:1.0}, {item:"C-220", qty:4.0}, {item:"VN-3", qty:1.0}, {item:"CHSS80", qty:0.07}, {item:"CDW", qty:0.33}, {item:"CCX", qty:0.05}, {item:"SP", qty:0.4}, {item:"DEG", qty:0.1}, {item:"SI 69", qty:0.15}], visible: ["C-220", "VN-3"] },
+            base: { name: "CRM (Base)", items: [{item:"SBR", qty:10.0}, {item:"CBY", qty:0.3}, {item:"CEV", qty:0.15}, {item:"CFU", qty:0.15}, {item:"CGT", qty:0.15}, {item:"RM 3000", qty:0.2}, {item:"ZNO", qty:1.5}, {item:"C-220", qty:4.0}, {item:"VN-3", qty:3.0}, {item:"CDW", qty:0.13}, {item:"CCX", qty:0.08}, {item:"CHS", qty:0.2}, {item:"CIB", qty:0.03}, {item:"SP", qty:0.4}, {item:"DEG", qty:0.15}, {item:"SI 69", qty:0.1}], visible: ["C-220", "VN-3"] }
+        },
+        "PICKING": {
+            top: { name: "Picking (Top)", items: [{item:"SBR", qty:10.0}, {item:"CAZ", qty:0.1}, {item:"CBY", qty:0.3}, {item:"CEV", qty:0.15}, {item:"CFU", qty:0.15}, {item:"RM 3000", qty:0.3}, {item:"CDW", qty:0.33}, {item:"CCX", qty:0.05}, {item:"CHS", qty:0.07}, {item:"ZNO", qty:1.0}, {item:"China", qty:6.0}, {item:"C-550", qty:2.5}, {item:"SP", qty:0.4}], visible: ["C-550", "China"] },
+            base: { name: "EBN-Picking (Base)", items: [{item:"RMA", qty:10.0}, {item:"CSG", qty:0.3}, {item:"CEV", qty:0.2}, {item:"CFU", qty:0.15}, {item:"ZNO", qty:1.0}, {item:"China", qty:12.0}, {item:"C-660", qty:2.0}, {item:"CTA", qty:0.17}, {item:"CHS", qty:5.0}, {item:"CKP", qty:0.07}, {item:"SP", qty:1.0}], visible: ["China", "C-660"] }
+        },
+        "MB": {
+            top: { name: "Master Batch Formulation", items: [{item:"SBR", qty:8.5}, {item:"CAZ", qty:0.2}, {item:"CQJ", qty:0.06}, {item:"CEV", qty:0.7}, {item:"Zn Peroxide", qty:4.7}], visible: ["SBR", "CAZ", "CQJ", "CEV", "Zn Peroxide"] }
+        },
+        "SPM": {
+            top: { name: "SPM Roll (Top)", items: [{item:"HYP CSM-40", qty:10}, {item:"PBR", qty:0.3}, {item:"CPK", qty:0.1}, {item:"CFU", qty:0.2}, {item:"Brown Facties", qty:0.3}, {item:"C-774", qty:4.0}, {item:"Baraytes", qty:0.5}, {item:"EPOXY", qty:1.5}, {item:"DOP", qty:0.35}, {item:"CHSS80", qty:0.1}, {item:"CTA", qty:0.025}, {item:"CIB", qty:0.025}, {item:"CMN", qty:0.085}], visible: ["C-774", "Baraytes"] },
+            base: { name: "SPM Roll (Base)", items: [{item:"RMA", qty:6}, {item:"NEO", qty:4}, {item:"CEV", qty:0.15}, {item:"CLM", qty:0.1}, {item:"RM 3000", qty:0.3}, {item:"ZNO", qty:0.5}, {item:"China", qty:3}, {item:"C-550", qty:2.5}, {item:"C-330", qty:3}, {item:"SP", qty:0.3}, {item:"CTA", qty:0.12}, {item:"CHS", qty:0.13}, {item:"CKP", qty:0.015}], visible: ["C-330", "C-550", "China"] }
+        },
+        "NBR_RMA": {
+            top: { name: "TCIL ECL (Top)", items: [{item:"NBR", qty:6}, {item:"RMA", qty:4}, {item:"CFU", qty:0.15}, {item:"CEV", qty:0.15}, {item:"CTA", qty:0.15}, {item:"RM 3000", qty:0.2}, {item:"CHS", qty:0.15}, {item:"CKP", qty:0.2},{item:"ZNO", qty:0.5}, {item:"C-550", qty:3.5}, {item:"VN-3", qty:0.75},{item:"DOP", qty:0.6}, ], visible: ["C-550","VN-3"] },
+            base: { name: "TCIL ECL (Base)", items: [{item:"NBR", qty:6}, {item:"RMA", qty:4},  {item:"CFU", qty:0.15}, {item:"CEV", qty:0.15}, {item:"CTA", qty:0.15}, {item:"RM 3000", qty:0.15}, {item:"CHS", qty:0.15}, {item:"CKP", qty:0.2},{item:"ZNO", qty:0.5}, {item:"C-550", qty:4.5}, {item:"VN-3", qty:2},{item:"DOP", qty:0.3}, {item:"SP", qty:0.15}], visible: ["C-550","VN-3"] }
+        },
+        "BLACK_STRIPPER": {
+            top: { name: "Stripper Ring (80-90 A)", items: [{item:"NBR", qty:10}, {item:"CAZ", qty:0.3}, {item:"CBY", qty:0.3}, {item:"CHS", qty:0.2}, {item:"ZNO", qty:1}, {item:"PF", qty:1.5}, {item:"CFU", qty:0.2}, {item:"CEV", qty:0.15}, {item:"RM 3000", qty:0.3}, {item:"VN-3", qty:2}, {item:"C-550", qty:3.25}, {item:"China", qty:6}, {item:"DEG", qty:0.15},{item:"DOP", qty:0.5},{item:"SI 69", qty:0.1},{item:"CBS", qty:0.12}, {item:"CKP", qty:0.02}], visible: ["VN-3", "C-550", "China"] },
+            base: { name: "Stripper Ring (60-70 A)", items: [{item:"NBR", qty:10}, {item:"CAZ", qty:0.3}, {item:"CBY", qty:0.3}, {item:"CHS", qty:0.2}, {item:"ZNO", qty:1}, {item:"PF", qty:1.5}, {item:"CFU", qty:0.2}, {item:"CEV", qty:0.15}, {item:"RM 3000", qty:0.3}, {item:"VN-3", qty:1}, {item:"C-550", qty:0.5}, {item:"China", qty:2}, {item:"DEG", qty:0.15},{item:"DOP", qty:0.5},{item:"SI 69", qty:0.1}, {item:"CBS", qty:0.12}, {item:"CKP", qty:0.02}], visible: ["VN-3", "C-550", "China"] }
+        },
+        "COLOUR_STRIPPER": {
+            top: { name: "Colour Stripper Ring (80-90 A)", items: [{item:"NBR", qty:10}, {item:"CAZ", qty:0.3}, {item:"CBY", qty:0.3}, {item:"CHS", qty:0.2}, {item:"ZNO", qty:1}, {item:"PF", qty:1.5}, {item:"CFU", qty:0.2}, {item:"CEV", qty:0.15}, {item:"RM 3000", qty:0.3}, {item:"VN-3", qty:3.5}, {item:"China", qty:5}, {item:"DEG", qty:0.15},{item:"DOP", qty:0.5},{item:"SI 69", qty:0.1},{item:"CBS", qty:0.12}, {item:"CKP", qty:0.02}, {item:"Color", qty:0.1}], visible: ["VN-3", "China"] },
+            base: { name: "Colour Stripper  Ring (60-70 A)", items: [{item:"NBR", qty:10}, {item:"CAZ", qty:0.3}, {item:"CBY", qty:0.3}, {item:"CHS", qty:0.2}, {item:"ZNO", qty:1}, {item:"PF", qty:1.5}, {item:"CFU", qty:0.2}, {item:"CEV", qty:0.15}, {item:"RM 3000", qty:0.3}, {item:"VN-3", qty:2}, {item:"China", qty:2.5}, {item:"DEG", qty:0.15},{item:"DOP", qty:0.5},{item:"SI 69", qty:0.1},{item:"CBS", qty:0.12}, {item:"CKP", qty:0.02}, {item:"Color", qty:0.1}], visible: ["VN-3", "China"] }
+        },
+        "DAMING": {
+            top: { name: "Daming (Top)", items: [{item:"NBR", qty:10}, {item:"CHS", qty:0.2},{item:"CAZ", qty:0.3}, {item:"CBY", qty:0.3},  {item:"ZNO", qty:1}, {item:"CFU", qty:0.2}, {item:"CEV", qty:0.2}, {item:"RM 3000", qty:0.3}, {item:"PF", qty:1.5}, {item:"CaCO3", qty:3},{item:"C-774", qty:1.8}, {item:"VN-3", qty:1.4},  {item:"DEG", qty:0.15}, {item:"SI 69", qty:0.15}, {item:"DOP", qty:0.3}, {item:"CDW", qty:0.12}, {item:"CKP", qty:0.02}], visible: ["CaCO3","C-774","VN-3"] },
+            base: { name: "Daming (Base)", items: [{item:"NBR", qty:10},{item:"CHS", qty:0.2}, {item:"CAZ", qty:0.3}, {item:"CBY", qty:0.3},  {item:"ZNO", qty:1}, {item:"CFU", qty:0.2}, {item:"CEV", qty:0.2}, {item:"RM 3000", qty:0.3},{item:"PF", qty:1.5}, {item:"China", qty:6},{item:"C-550", qty:1.5},{item:"VN-3", qty:1},  {item:"DEG", qty:0.15},{item:"SI 69", qty:0.15}, {item:"DOP", qty:0.3}, {item:"CDW", qty:0.12}, {item:"CKP", qty:0.02}, ], visible: ["China","C-550","VN-3"] }
+        },
+        "QUADRANT": {
+            top: { name: "TSDPL Quadrant Roll (75-85 A)", items: [{item:"NBR", qty:10}, {item:"CAZ", qty:0.3}, {item:"CBY", qty:0.3}, {item:"CHS", qty:0.2}, {item:"ZNO", qty:1}, {item:"PF", qty:1.5}, {item:"CFU", qty:0.2}, {item:"CEV", qty:0.15}, {item:"RM 3000", qty:0.3}, {item:"VN-3", qty:4}, {item:"C-550", qty:3}, {item:"China", qty:2}, {item:"DEG", qty:0.15},{item:"DOP", qty:0.5},{item:"SI 69", qty:0.1},{item:"CBS", qty:0.12}, {item:"CKP", qty:0.02}], visible: ["VN-3", "C-550", "China"] }
+        },
+        "SLEEVE": {
+            top: { name: "Sleeve Top", items: [{item:"NBR", qty:8}, {item:"RMA", qty:2}, {item:"CHSS80", qty:0.250}, {item:"CSG", qty:0.350}, {item:"CEV", qty:0.15}, {item:"CFU", qty:0.15}, {item:"ZNO", qty:4}, {item:"C-660", qty:0.5}, {item:"VN-3", qty:1.5}, {item:"SP", qty:0.3}, {item:"DEG", qty:0.05}, {item:"DOP", qty:0.5}, {item:"SI69", qty:0.25}, {item:"CDW", qty:0.13}, {item:"CCX", qty:0.08}], visible: ["C-660", "VN-3"] },
+            middle: { name: "Sleeve Middle", items: [{item:"RMA", qty:10}, {item:"CHS", qty:0.250}, {item:"CSG", qty:0.350}, {item:"CEV", qty:0.15}, {item:"CFU", qty:0.15}, {item:"ZNO", qty:4}, {item:"C-660", qty:2}, {item:"VN-3", qty:5}, {item:"SP", qty:0.7}, {item:"DEG", qty:0.1}, {item:"DOP", qty:0.4}, {item:"SI69", qty:0.3}, {item:"CDW", qty:0.13}, {item:"CCX", qty:0.08}], visible: ["C-660", "VN-3"] },
+            base: { name: "Sleeve Base", items: [{item:"NBR", qty:8}, {item:"RMA", qty:2}, {item:"CHS", qty:0.2}, {item:"CSG", qty:0.350}, {item:"CEV", qty:0.15}, {item:"CFU", qty:0.15}, {item:"ZNO", qty:4}, {item:"C-660", qty:2.5}, {item:"VN-3", qty:5}, {item:"SP", qty:0.3}, {item:"DEG", qty:0.1}, {item:"DOP", qty:0.4},{item:"CDW", qty:0.13}, {item:"CCX", qty:0.08}], visible: ["C-660", "VN-3"] }
+        },
+        "CTC": {
+            top: { name: "CTC Jumbo Wheel", items: [{item:"NEO", qty:1.25}, {item:"ZNO", qty:0.062}, {item:"CNL", qty:0.05}, {item:"CEV", qty:0.017}, {item:"CLM", qty:0.017},{item:"CTA", qty:0.015},{item:"C-220", qty:0.65},{item:"VN-3", qty:0.3},{item:"SP", qty:0.125},{item:"CHS", qty:0.007},{item:"CRH", qty:0.007},{item:"CKP", qty:0.003}], visible: ["NEO", "C-220", "VN-3"] }
+        }
+    };
+
+    // UTILITY: Normalize strings
+    function normalize(str) { return str.toUpperCase().replace(/[^A-Z0-9]/g, ""); }
+
+    // HELPER: Show/Hide Modals
+    function toggleModal(id, show) {
+        document.getElementById(id).style.display = show ? "flex" : "none";
+        const aboutBtn = document.getElementById('aboutIcon');
+        const selectVal = document.getElementById('groupSelect').value;
+
+        if (show) {
+            aboutBtn.style.display = "none";
+        } else {
+            if (selectVal === "") aboutBtn.style.display = "flex";
+        }
+
+        if(show && id === 'rateModal') renderGroupedRates();
+        if(show && id === 'historyModal') renderHistory();
+    }
+
+    // ============================================
+    // SECTION 5: RENDER & CALC (UI UPDATES)
+    // ============================================
+
+    function loadGroup() {
+        const key = document.getElementById('groupSelect').value;
+        const area = document.getElementById('displayArea');
+        const aboutBtn = document.getElementById('aboutIcon');
+        
+        if (key) {
+            document.body.classList.remove('startup-mode');
+            aboutBtn.style.display = "none";
+        } else {
+            document.body.classList.add('startup-mode');
+            aboutBtn.style.display = "flex";
+        }
+
+        area.innerHTML = "";
+        if(!key) return;
+
+        const group = recipes[key];
+        area.className = group.base ? "compound-grid" : "compound-grid single-grid";
+        
+        if(group.top) createCard(group.top, "top", area);
+        if(group.middle) createCard(group.middle, "middle", area);
+        if(group.base) createCard(group.base, "base", area);
+        
+        updateCalculations();
+    }
+
+    function createCard(data, type, parent) {
+        const card = document.createElement('div');
+        card.className = `card ${type === 'base' ? 'base-card' : type === 'middle' ? 'middle-card' : ''}`;
+        card.innerHTML = `<h3>${data.name}</h3><div id="${type}Items"></div>
+            <div class="results">
+                <div class="res-line"><span>Total Batch Wt:</span><b id="${type}Wt">0.00</b></div>
+                <div class="res-line"><span>Material Cost:</span><b id="${type}Cost">0.00</b></div>
+                <div class="res-line"><span>Per Kg Cost:</span><b id="${type}PerKg" class="per-kg-label">0.00</b></div>
+            </div>`;
+        parent.appendChild(card);
+        
+        const itemsDiv = document.getElementById(`${type}Items`);
+        
+        data.items.forEach(obj => {
+            const isVisible = data.visible.includes(obj.item);
+            const row = document.createElement('div');
+            row.className = "item-row";
+            row.style.display = isVisible ? "flex" : "none";
+            row.innerHTML = `<div class="item-name">${obj.item}</div>
+                <div class="item-input"><input type="number" step="0.001" value="${obj.qty}" 
+                data-item="${obj.item}" data-default="${obj.qty}" data-type="${type}" 
+                oninput="validateInput(this)" onblur="revertOnBlank(this)"></div>`;
+            itemsDiv.appendChild(row);
+        });
+    }
+
+    function updateCalculations() {
+        ['top', 'middle', 'base'].forEach(type => {
+            let totalWt = 0; 
+            let totalCost = 0; 
+            let zeroRateFound = false;
+            
+            const inputs = document.querySelectorAll(`input[data-type="${type}"]`);
+            if(!inputs.length) return;
+
+            inputs.forEach(input => {
+                const q = parseFloat(input.value) || 0;
+                const itemName = input.getAttribute('data-item');
+                const norm = (itemName === "M.B") ? "MB" : normalize(itemName);
+                
+                const rate = appRates[norm] || 0;
+                
+                if(q > 0 && rate === 0) zeroRateFound = true;
+                
+                totalWt += q;
+                totalCost += (q * rate);
+            });
+            
+            const perKg = totalWt > 0 ? (totalCost / totalWt) : 0;
+            
+            const wtEl = document.getElementById(`${type}Wt`);
+            const costEl = document.getElementById(`${type}Cost`);
+            const perKgEl = document.getElementById(`${type}PerKg`);
+
+            if(wtEl) { wtEl.innerText = totalWt.toFixed(3) + " Kg"; wtEl.className = "wt-black"; }
+            if(costEl) {
+                costEl.innerText = "₹" + totalCost.toLocaleString('en-IN', {minimumFractionDigits: 2});
+                costEl.className = zeroRateFound ? "text-danger" : "cost-primary";
+            }
+            if(perKgEl) {
+                perKgEl.innerText = "₹" + perKg.toLocaleString('en-IN', {minimumFractionDigits: 2});
+                perKgEl.className = zeroRateFound ? "text-danger" : "perkg-warning";
+            }
+        });
+    }
+
+    function validateInput(input) {
+        let val = input.value;
+        if (val.includes('.')) {
+            let parts = val.split('.');
+            if (parts[1].length > 3) { input.value = parts[0] + '.' + parts[1].slice(0, 3); }
+        }
+        updateCalculations();
+    }
+
+    function revertOnBlank(input) {
+        if (input.value === "" || parseFloat(input.value) < 0) {
+            input.value = input.dataset.default;
+            if(input.hasAttribute('data-type')) updateCalculations();
+        }
+    }
+
+    // ============================================
+    // SECTION 6: RATE MANAGEMENT UI
+    // ============================================
+
+    function renderGroupedRates() {
+        const container = document.getElementById('rateEditorContent');
+        container.innerHTML = "";
+        
+        for (const [groupName, itemNames] of Object.entries(rateGroupConfig)) {
+            const header = document.createElement('div');
+            header.className = "rate-group-header";
+            header.innerText = groupName;
+            container.appendChild(header);
+            
+            const grid = document.createElement('div');
+            grid.className = "rate-grid";
+            
+            itemNames.forEach(name => {
+                const normKey = normalize(name);
+                const currentRate = appRates[normKey] || 0;
+                const row = document.createElement('div');
+                row.className = "rate-row";
+                row.innerHTML = `<label title="${name}">${name}</label>
+                                 <input type="number" step="0.1" value="${currentRate}" 
+                                 data-name="${name}" data-key="${normKey}" 
+                                 data-default="${currentRate}" onblur="revertOnBlank(this)">`;
+                grid.appendChild(row);
+            });
+            container.appendChild(grid);
+        }
+    }
+
+    function saveRates() {
+        const inputs = document.querySelectorAll('#rateEditorContent input');
+        const now = new Date().toLocaleString();
+        let changed = false;
+
+        inputs.forEach(input => {
+            const key = input.getAttribute('data-key');
+            const name = input.getAttribute('data-name');
+            const newVal = parseFloat(input.value) || 0;
+            const oldVal = appRates[key] || 0;
+
+            if (newVal !== oldVal) {
+                // Update Memory
+                appRates[key] = newVal;
+                // Update Storage
+                updateRateInStorage(key, newVal);
+                
+                // Add History Entry
+                const histEntry = { date: now, item: name, old: oldVal, new: newVal };
+                rateHistory.unshift(histEntry);
+                addHistoryToStorage(histEntry);
+                
+                changed = true;
+            }
+        });
+
+        if(changed) {
+            if(rateHistory.length > 200) {
+                 rateHistory = rateHistory.slice(0, 200);
+                 syncHistoryStorage(); 
+            }
+            updateCalculations();
+            alert("Rates Updated & History Recorded!");
+        }
+        toggleModal('rateModal', false);
+    }
+
+    function renderHistory() {
+        const container = document.getElementById('historyContent');
+        container.innerHTML = rateHistory.length ? "" : "<tr><td colspan='4' style='text-align:center'>No history records found.</td></tr>";
+        
+        rateHistory.forEach((log, index) => {
+            const diffClass = log.new > log.old ? 'history-up' : 'history-down';
+            const row = `<tr>
+                <td>${log.date}</td>
+                <td onclick="deleteHistoryItem(${index})" style="cursor:pointer;" title="Click to delete entry">
+                    <b>${log.item}</b>
+                </td>
+                <td>₹${log.old.toFixed(2)}</td>
+                <td class="${diffClass}">₹${log.new.toFixed(2)}</td>
+            </tr>`;
+            container.innerHTML += row;
+        });
+    }
+
+    function deleteHistoryItem(index) {
+        const item = rateHistory[index];
+        const confirmDelete = confirm(`Delete history for "${item.item}" on ${item.date}?`);
+        
+        if (confirmDelete) {
+            rateHistory.splice(index, 1);
+            syncHistoryStorage();
+            renderHistory();
+        }
+    }
+
+    // ============================================
+    // SECTION 7: APP STARTUP & PWA REGISTRATION
+    // ============================================
+    
+    // Auto-Register Service Worker for PWA
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            // We'll assume your SW file will be named service-worker.js
+            navigator.serviceWorker.register('./service-worker.js')
+                .then(reg => console.log('SW Registered!', reg))
+                .catch(err => console.log('SW Failed:', err));
+        });
+    }
+
+    window.addEventListener('load', () => {
+        initDB();
+    });
+
+</script>
+</body>
+</html>
+
+
